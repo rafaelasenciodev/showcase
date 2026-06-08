@@ -1,0 +1,31 @@
+import Foundation
+import SwiftData
+
+@Model
+public final class ArticleModel {
+    @Attribute(.unique) public var id: String
+    public var title: String
+    public var author: String
+    public var publishedAt: Date
+    public var summary: String
+    public var content: String
+    public var isDemoSeed: Bool
+
+    public init(
+        id: String,
+        title: String,
+        author: String,
+        publishedAt: Date,
+        summary: String,
+        content: String,
+        isDemoSeed: Bool = false
+    ) {
+        self.id = id
+        self.title = title
+        self.author = author
+        self.publishedAt = publishedAt
+        self.summary = summary
+        self.content = content
+        self.isDemoSeed = isDemoSeed
+    }
+}
