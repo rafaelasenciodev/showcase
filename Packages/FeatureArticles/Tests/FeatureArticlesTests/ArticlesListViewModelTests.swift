@@ -14,6 +14,7 @@ struct ArticlesListViewModelTests {
             fetchArticles: FetchArticlesUseCase(repository: repository),
             searchArticles: SearchArticlesUseCase(),
             refreshArticles: RefreshArticlesUseCase(repository: repository),
+            deleteArticle: DeleteArticleUseCase(repository: repository),
             toggleFavorite: ToggleFavoriteUseCase(repository: favorites),
             fetchFavoriteIDs: { try await favorites.fetchFavoriteIDs() }
         )

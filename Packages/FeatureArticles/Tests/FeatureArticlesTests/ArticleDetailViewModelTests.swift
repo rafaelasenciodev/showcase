@@ -13,6 +13,7 @@ struct ArticleDetailViewModelTests {
         let viewModel = ArticleDetailViewModel(
             articleId: "swift-concurrency-2024",
             fetchDetail: FetchArticleDetailUseCase(repository: repository),
+            deleteArticle: DeleteArticleUseCase(repository: repository),
             toggleFavoriteUseCase: ToggleFavoriteUseCase(repository: favorites),
             isFavoriteCheck: { id in try await favorites.isFavorite(articleId: id) }
         )

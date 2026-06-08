@@ -11,7 +11,8 @@ struct SettingsViewModelTests {
         let repository = MockSettingsRepository()
         let viewModel = SettingsViewModel(
             fetchSettings: FetchSettingsUseCase(repository: repository),
-            updateTheme: UpdateThemeUseCase(repository: repository)
+            updateTheme: UpdateThemeUseCase(repository: repository),
+            restoreDemoArticles: RestoreDemoArticlesUseCase(repository: MockArticleRepository())
         )
         await viewModel.onAppear()
         #expect(viewModel.settings?.theme == .system)
@@ -22,7 +23,8 @@ struct SettingsViewModelTests {
         let repository = MockSettingsRepository()
         let viewModel = SettingsViewModel(
             fetchSettings: FetchSettingsUseCase(repository: repository),
-            updateTheme: UpdateThemeUseCase(repository: repository)
+            updateTheme: UpdateThemeUseCase(repository: repository),
+            restoreDemoArticles: RestoreDemoArticlesUseCase(repository: MockArticleRepository())
         )
         await viewModel.onAppear()
         await viewModel.selectTheme(.dark)
