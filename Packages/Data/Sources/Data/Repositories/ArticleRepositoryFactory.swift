@@ -1,12 +1,17 @@
 import Domain
 import Foundation
 import Networking
+import SwiftData
 
 public enum ArticleRepositoryFactory {
-    public static func make(configuration: DataSourceConfiguration) -> ArticleRepositoryProtocol {
+    @MainActor
+    public static func make(
+        configuration: DataSourceConfiguration,
+        modelContext: ModelContext
+    ) -> ArticleRepositoryProtocol {
         switch configuration {
         case .local:
-            return LocalArticleRepository()
+            return SwiftDataArticleRepository(modelContext: modelContext)
         case let .remote(baseURL):
             let networkConfig = NetworkConfiguration(baseURL: baseURL)
             let client = URLSessionAPIClient(configuration: networkConfig)

@@ -32,6 +32,24 @@ public final class RemoteArticleRepository: ArticleRepositoryProtocol, @unchecke
         return articles
     }
 
+    public func createArticle(_ draft: ArticleDraft) async throws -> Article {
+        throw DomainError.unsupportedOperation
+    }
+
+    public func updateArticle(id: String, draft: ArticleDraft) async throws -> Article {
+        throw DomainError.unsupportedOperation
+    }
+
+    public func deleteArticle(id: String) async throws {
+        throw DomainError.unsupportedOperation
+    }
+
+    public func seedDemoContentIfNeeded() async throws {}
+
+    public func restoreDemoArticles() async throws -> Int {
+        throw DomainError.unsupportedOperation
+    }
+
     private func loadIfNeeded() async throws {
         if await cache.isEmpty() {
             _ = try await refreshArticles()
