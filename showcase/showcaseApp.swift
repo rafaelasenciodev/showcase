@@ -12,7 +12,7 @@ struct showcaseApp: App {
 
     init() {
         do {
-            modelContainer = try ModelContainer(for: FavoriteArticleModel.self)
+            modelContainer = try ModelContainer(for: FavoriteArticleModel.self, ArticleModel.self)
             dependencyContainer = LiveDependencyContainer(
                 modelContext: modelContainer.mainContext
             )
@@ -26,6 +26,9 @@ struct showcaseApp: App {
         WindowGroup {
             MainTabView(container: dependencyContainer, selectedTheme: $selectedTheme)
                 .preferredColorScheme(colorScheme)
+                .task {
+                    try? await dependencyContainer.seedArticlesIfNeeded()
+                }
         }
         .modelContainer(modelContainer)
     }

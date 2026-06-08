@@ -1,4 +1,5 @@
 import Domain
+import FeatureArticles
 import FeatureFavorites
 import FeatureSettings
 import SwiftUI
@@ -29,9 +30,15 @@ struct MainTabView: View {
             }
         }
         .onAppear {
-            container.configureSettings { theme in
-                selectedTheme = theme
-            }
+            container.configureSettings(
+                onThemeChanged: { theme in
+                    selectedTheme = theme
+                },
+                onDemoArticlesRestored: {
+                    await container.articlesListViewModel.refresh()
+                    await container.favoritesViewModel.onAppear()
+                }
+            )
         }
     }
 }
