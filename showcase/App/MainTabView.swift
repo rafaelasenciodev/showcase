@@ -1,7 +1,9 @@
 import Domain
-import FeatureArticles
-import FeatureFavorites
-import FeatureSettings
+import FeatureArticlesCore
+import FeatureArticlesUI
+import FeatureFavoritesCore
+import FeatureFavoritesUI
+import FeatureSettingsUI
 import SwiftUI
 
 struct MainTabView: View {

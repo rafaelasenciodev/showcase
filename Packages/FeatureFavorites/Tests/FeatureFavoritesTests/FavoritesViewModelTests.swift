@@ -1,5 +1,5 @@
 import Domain
-import FeatureFavorites
+import FeatureFavoritesCore
 import SharedTesting
 import Testing
 

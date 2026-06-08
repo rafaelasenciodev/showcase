@@ -5,7 +5,8 @@ let package = Package(
     name: "FeatureSettings",
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
-        .library(name: "FeatureSettings", targets: ["FeatureSettings"])
+        .library(name: "FeatureSettingsCore", targets: ["FeatureSettingsCore"]),
+        .library(name: "FeatureSettingsUI", targets: ["FeatureSettingsUI"])
     ],
     dependencies: [
         .package(path: "../Core"),
@@ -15,12 +16,19 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "FeatureSettings",
-            dependencies: ["Core", "Domain", "DesignSystem"]
+            name: "FeatureSettingsCore",
+            dependencies: ["Core", "Domain"]
+        ),
+        .target(
+            name: "FeatureSettingsUI",
+            dependencies: [
+                "FeatureSettingsCore",
+                .product(name: "DesignSystem", package: "DesignSystem", condition: .when(platforms: [.iOS]))
+            ]
         ),
         .testTarget(
             name: "FeatureSettingsTests",
-            dependencies: ["FeatureSettings", "SharedTesting"]
+            dependencies: ["FeatureSettingsCore", "SharedTesting"]
         )
     ]
 )

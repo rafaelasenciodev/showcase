@@ -40,9 +40,9 @@ Packages/
 ├── Data/              # Repositories, DTOs, mappers, SwiftData
 ├── Networking/        # URLSession client and endpoints
 ├── DesignSystem/      # Reusable UI components
-├── FeatureArticles/   # List, detail, search, CRUD
-├── FeatureFavorites/  # Favorites tab
-├── FeatureSettings/   # Theme and app info
+├── FeatureArticles/   # Core (ViewModels) + UI (Views)
+├── FeatureFavorites/  # Core + UI
+├── FeatureSettings/   # Core + UI
 └── SharedTesting/     # Fixtures and mocks
 ```
 

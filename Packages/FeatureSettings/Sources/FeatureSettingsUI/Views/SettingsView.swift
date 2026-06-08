@@ -1,5 +1,7 @@
+#if os(iOS)
 import DesignSystem
 import Domain
+import FeatureSettingsCore
 import SwiftUI
 
 public struct SettingsView: View {
@@ -77,3 +79,4 @@ public struct SettingsView: View {
         }
     }
 }
+#endif

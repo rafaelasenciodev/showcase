@@ -84,19 +84,34 @@
 			productName = Data;
 			package = PKG0000010000000000000005 /* XCLocalSwiftPackageReference "Data" */;
 		};
-		PRD0000010000000000000006 /* FeatureArticles */ = {
+		PRD0000010000000000000006 /* FeatureArticlesCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = FeatureArticles;
+			productName = FeatureArticlesCore;
 			package = PKG0000010000000000000006 /* XCLocalSwiftPackageReference "FeatureArticles" */;
 		};
-		PRD0000010000000000000007 /* FeatureFavorites */ = {
+		PRD0000010000000000000009 /* FeatureArticlesUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = FeatureFavorites;
+			productName = FeatureArticlesUI;
+			package = PKG0000010000000000000006 /* XCLocalSwiftPackageReference "FeatureArticles" */;
+		};
+		PRD0000010000000000000007 /* FeatureFavoritesCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureFavoritesCore;
 			package = PKG0000010000000000000007 /* XCLocalSwiftPackageReference "FeatureFavorites" */;
 		};
-		PRD0000010000000000000008 /* FeatureSettings */ = {
+		PRD0000010000000000000010 /* FeatureFavoritesUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = FeatureSettings;
+			productName = FeatureFavoritesUI;
+			package = PKG0000010000000000000007 /* XCLocalSwiftPackageReference "FeatureFavorites" */;
+		};
+		PRD0000010000000000000008 /* FeatureSettingsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureSettingsCore;
+			package = PKG0000010000000000000008 /* XCLocalSwiftPackageReference "FeatureSettings" */;
+		};
+		PRD0000010000000000000011 /* FeatureSettingsUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureSettingsUI;
 			package = PKG0000010000000000000008 /* XCLocalSwiftPackageReference "FeatureSettings" */;
 		};
 /* End XCSwiftPackageProductDependency section */
@@ -192,9 +207,12 @@
 			packageProductDependencies = (
 				PRD0000010000000000000005 /* Data */,
 				PRD0000010000000000000002 /* Domain */,
-				PRD0000010000000000000006 /* FeatureArticles */,
-				PRD0000010000000000000007 /* FeatureFavorites */,
-				PRD0000010000000000000008 /* FeatureSettings */,
+				PRD0000010000000000000006 /* FeatureArticlesCore */,
+				PRD0000010000000000000009 /* FeatureArticlesUI */,
+				PRD0000010000000000000007 /* FeatureFavoritesCore */,
+				PRD0000010000000000000010 /* FeatureFavoritesUI */,
+				PRD0000010000000000000008 /* FeatureSettingsCore */,
+				PRD0000010000000000000011 /* FeatureSettingsUI */,
 			);
 			productName = showcase;
 			productReference = 7340C6932FD70E5E00059CF8 /* showcase.app */;

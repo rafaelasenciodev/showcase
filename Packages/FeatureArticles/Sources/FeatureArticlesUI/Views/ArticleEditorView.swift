@@ -1,5 +1,7 @@
+#if os(iOS)
 import DesignSystem
 import Domain
+import FeatureArticlesCore
 import SwiftUI
 
 public struct ArticleEditorView: View {
@@ -53,3 +55,4 @@ public struct ArticleEditorView: View {
         }
     }
 }
+#endif

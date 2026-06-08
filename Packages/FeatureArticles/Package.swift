@@ -5,7 +5,8 @@ let package = Package(
     name: "FeatureArticles",
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
-        .library(name: "FeatureArticles", targets: ["FeatureArticles"])
+        .library(name: "FeatureArticlesCore", targets: ["FeatureArticlesCore"]),
+        .library(name: "FeatureArticlesUI", targets: ["FeatureArticlesUI"])
     ],
     dependencies: [
         .package(path: "../Core"),
@@ -15,12 +16,19 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "FeatureArticles",
-            dependencies: ["Core", "Domain", "DesignSystem"]
+            name: "FeatureArticlesCore",
+            dependencies: ["Core", "Domain"]
+        ),
+        .target(
+            name: "FeatureArticlesUI",
+            dependencies: [
+                "FeatureArticlesCore",
+                .product(name: "DesignSystem", package: "DesignSystem", condition: .when(platforms: [.iOS]))
+            ]
         ),
         .testTarget(
             name: "FeatureArticlesTests",
-            dependencies: ["FeatureArticles", "SharedTesting"]
+            dependencies: ["FeatureArticlesCore", "SharedTesting"]
         )
     ]
 )

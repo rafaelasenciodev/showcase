@@ -1,9 +1,12 @@
 import Core
 import Data
 import Domain
-import FeatureArticles
-import FeatureFavorites
-import FeatureSettings
+import FeatureArticlesCore
+import FeatureArticlesUI
+import FeatureFavoritesCore
+import FeatureFavoritesUI
+import FeatureSettingsCore
+import FeatureSettingsUI
 import SwiftData
 
 @MainActor

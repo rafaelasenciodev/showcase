@@ -1,4 +1,4 @@
-import FeatureArticles
+import FeatureArticlesUI
 import SwiftUI
 
 struct ArticlesNavigationStack: View {

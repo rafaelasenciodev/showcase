@@ -1,5 +1,5 @@
 import Domain
-import FeatureSettings
+import FeatureSettingsCore
 import SharedTesting
 import Testing
 

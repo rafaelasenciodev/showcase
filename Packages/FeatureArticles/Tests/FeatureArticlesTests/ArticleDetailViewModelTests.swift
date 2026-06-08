@@ -1,5 +1,5 @@
 import Domain
-import FeatureArticles
+import FeatureArticlesCore
 import SharedTesting
 import Testing
 

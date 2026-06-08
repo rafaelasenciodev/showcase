@@ -1,5 +1,7 @@
+#if os(iOS)
 import DesignSystem
 import Domain
+import FeatureFavoritesCore
 import SwiftUI
 
 public struct FavoritesListView: View {
@@ -54,3 +56,4 @@ public struct FavoritesListView: View {
         }
     }
 }
+#endif

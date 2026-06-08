@@ -24,11 +24,7 @@ jobs:
             -quiet
 
       - name: Test
-        run: |
-          xcodebuild test \
-            -scheme showcase \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
-            -quiet
+        run: ./scripts/run-package-tests.sh
 
       - name: Validate SPM packages
         run: ./scripts/validate-packages.sh

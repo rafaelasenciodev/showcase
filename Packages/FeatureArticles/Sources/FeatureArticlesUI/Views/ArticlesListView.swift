@@ -1,6 +1,8 @@
+#if os(iOS)
 import Core
 import DesignSystem
 import Domain
+import FeatureArticlesCore
 import SwiftUI
 
 public struct ArticlesListView: View {
@@ -128,3 +130,4 @@ public struct ArticlesListView: View {
         }
     }
 }
+#endif

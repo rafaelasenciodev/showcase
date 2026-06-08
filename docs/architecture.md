@@ -10,9 +10,12 @@ The app follows **Clean Architecture** with **MVVM** in the Presentation layer. 
 graph TB
     subgraph Presentation
         App[showcase App]
-        FA[FeatureArticles]
-        FF[FeatureFavorites]
-        FS[FeatureSettings]
+        FA[FeatureArticlesUI]
+        FF[FeatureFavoritesUI]
+        FS[FeatureSettingsUI]
+        FAC[FeatureArticlesCore]
+        FFC[FeatureFavoritesCore]
+        FSC[FeatureSettingsCore]
         DS[DesignSystem]
     end
     subgraph Domain
@@ -25,8 +28,11 @@ graph TB
         NET[Networking]
         CORE[Core]
     end
-    App --> FA & FF & FS & DATA
-    FA & FF & FS --> DOM & DS
+    App --> FA & FF & FS & FAC & FFC & FSC & DATA
+    FA --> FAC & DS
+    FF --> FFC & DS
+    FS --> FSC & DS
+    FAC & FFC & FSC --> DOM
     DS --> CORE
     DATA --> DOM & NET
     NET --> CORE
@@ -40,9 +46,8 @@ graph TB
 | Module | Role |
 |--------|------|
 | `showcase` | Composition root, `TabView`, SwiftData container |
-| `FeatureArticles` | List, detail, search, pull-to-refresh |
-| `FeatureFavorites` | Favorites tab |
-| `FeatureSettings` | Theme, version, architecture info |
+| `Feature*Core` | ViewModels and presentation logic (testable on macOS) |
+| `Feature*UI` | SwiftUI views (`#if os(iOS)`, depends on DesignSystem) |
 | `DesignSystem` | Buttons, cards, loading/empty/error states |
 
 - Views are declarative — no repository calls or DTO parsing
@@ -99,7 +104,9 @@ DesignSystem → Core
 Networking → Core
 ```
 
-Forbidden: `Domain → Data`, `Feature → Data`, upward dependencies of any kind.
+Forbidden: `Domain → Data`, `Feature*Core → Data`, `Feature*UI → Data`, upward dependencies of any kind.
+
+`Feature*Core` must not depend on `DesignSystem` or SwiftUI. ViewModel tests run with `swift test` on macOS; UI targets compile only for iOS.
 
 ## Testing Strategy
 
