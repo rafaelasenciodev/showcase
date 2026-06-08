@@ -23,6 +23,84 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		PKG0000010000000000000001 /* XCLocalSwiftPackageReference "Core" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Core;
+		};
+		PKG0000010000000000000002 /* XCLocalSwiftPackageReference "Domain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Domain;
+		};
+		PKG0000010000000000000003 /* XCLocalSwiftPackageReference "DesignSystem" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/DesignSystem;
+		};
+		PKG0000010000000000000004 /* XCLocalSwiftPackageReference "Networking" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Networking;
+		};
+		PKG0000010000000000000005 /* XCLocalSwiftPackageReference "Data" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Data;
+		};
+		PKG0000010000000000000006 /* XCLocalSwiftPackageReference "FeatureArticles" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureArticles;
+		};
+		PKG0000010000000000000007 /* XCLocalSwiftPackageReference "FeatureFavorites" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureFavorites;
+		};
+		PKG0000010000000000000008 /* XCLocalSwiftPackageReference "FeatureSettings" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureSettings;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PRD0000010000000000000001 /* Core */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Core;
+			package = PKG0000010000000000000001 /* XCLocalSwiftPackageReference "Core" */;
+		};
+		PRD0000010000000000000002 /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Domain;
+			package = PKG0000010000000000000002 /* XCLocalSwiftPackageReference "Domain" */;
+		};
+		PRD0000010000000000000003 /* DesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DesignSystem;
+			package = PKG0000010000000000000003 /* XCLocalSwiftPackageReference "DesignSystem" */;
+		};
+		PRD0000010000000000000004 /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+			package = PKG0000010000000000000004 /* XCLocalSwiftPackageReference "Networking" */;
+		};
+		PRD0000010000000000000005 /* Data */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Data;
+			package = PKG0000010000000000000005 /* XCLocalSwiftPackageReference "Data" */;
+		};
+		PRD0000010000000000000006 /* FeatureArticles */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureArticles;
+			package = PKG0000010000000000000006 /* XCLocalSwiftPackageReference "FeatureArticles" */;
+		};
+		PRD0000010000000000000007 /* FeatureFavorites */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureFavorites;
+			package = PKG0000010000000000000007 /* XCLocalSwiftPackageReference "FeatureFavorites" */;
+		};
+		PRD0000010000000000000008 /* FeatureSettings */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureSettings;
+			package = PKG0000010000000000000008 /* XCLocalSwiftPackageReference "FeatureSettings" */;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin PBXFileReference section */
 		7340C6932FD70E5E00059CF8 /* showcase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = showcase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7340C6A02FD70E5F00059CF8 /* showcaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = showcaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +190,11 @@
 			);
 			name = showcase;
 			packageProductDependencies = (
+				PRD0000010000000000000005 /* Data */,
+				PRD0000010000000000000002 /* Domain */,
+				PRD0000010000000000000006 /* FeatureArticles */,
+				PRD0000010000000000000007 /* FeatureFavorites */,
+				PRD0000010000000000000008 /* FeatureSettings */,
 			);
 			productName = showcase;
 			productReference = 7340C6932FD70E5E00059CF8 /* showcase.app */;
@@ -196,6 +279,16 @@
 			mainGroup = 7340C68A2FD70E5E00059CF8;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
+			packageReferences = (
+				PKG0000010000000000000001 /* XCLocalSwiftPackageReference "Core" */,
+				PKG0000010000000000000002 /* XCLocalSwiftPackageReference "Domain" */,
+				PKG0000010000000000000003 /* XCLocalSwiftPackageReference "DesignSystem" */,
+				PKG0000010000000000000004 /* XCLocalSwiftPackageReference "Networking" */,
+				PKG0000010000000000000005 /* XCLocalSwiftPackageReference "Data" */,
+				PKG0000010000000000000006 /* XCLocalSwiftPackageReference "FeatureArticles" */,
+				PKG0000010000000000000007 /* XCLocalSwiftPackageReference "FeatureFavorites" */,
+				PKG0000010000000000000008 /* XCLocalSwiftPackageReference "FeatureSettings" */,
+			);
 			productRefGroup = 7340C6942FD70E5E00059CF8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -423,7 +516,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.4;
 			};
@@ -467,7 +560,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.4;
 			};
