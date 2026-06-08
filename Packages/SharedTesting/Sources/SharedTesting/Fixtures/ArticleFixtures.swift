@@ -1,0 +1,33 @@
+import Domain
+import Foundation
+
+public enum ArticleFixtures {
+    public static let sample: Article = Article(
+        id: "swift-concurrency-2024",
+        title: "Understanding Swift Concurrency",
+        author: "Jane Appleseed",
+        publishedAt: ISO8601DateFormatter().date(from: "2024-03-15T09:30:00Z")!,
+        summary: "A practical guide to async/await and actors in Swift 6.",
+        content: "Swift concurrency introduces structured concurrency patterns that improve safety and performance."
+    )
+
+    public static let samples: [Article] = [
+        sample,
+        Article(
+            id: "clean-architecture-ios",
+            title: "Clean Architecture on iOS",
+            author: "John Architect",
+            publishedAt: ISO8601DateFormatter().date(from: "2024-02-10T14:00:00Z")!,
+            summary: "Layer separation with MVVM in SwiftUI applications.",
+            content: "Clean Architecture keeps business rules independent from frameworks and UI."
+        ),
+        Article(
+            id: "swiftdata-favorites",
+            title: "Persisting Favorites with SwiftData",
+            author: "Alex Developer",
+            publishedAt: ISO8601DateFormatter().date(from: "2024-01-20T11:15:00Z")!,
+            summary: "Local persistence patterns for user-curated content.",
+            content: "SwiftData integrates with SwiftUI for modern persistence workflows."
+        )
+    ]
+}
