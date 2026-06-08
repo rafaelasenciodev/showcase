@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
@@ -20,14 +20,14 @@ jobs:
         run: |
           xcodebuild build \
             -scheme showcase \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'generic/platform=iOS Simulator' \
             -quiet
 
       - name: Test
         run: |
           xcodebuild test \
             -scheme showcase \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
             -quiet
 
       - name: Validate SPM packages
