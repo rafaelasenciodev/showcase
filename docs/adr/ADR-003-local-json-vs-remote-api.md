@@ -23,10 +23,11 @@ Implement a **two-phase data strategy** behind a unified `ArticleRepositoryProto
 
 ### Phase 1 (Default — Active)
 
-- Bundle `articles.json` in the `Data` package
-- `LocalJSONArticleDataSource` reads and decodes JSON
-- `LocalArticleRepository` implements `ArticleRepositoryProtocol`
-- DI container wires local implementation by default
+- Persist articles in **SwiftData** via `SwiftDataArticleRepository`
+- Full **CRUD** (create, read, update, delete) with cascade delete for favorites
+- `articles.json` remains bundled as **demo seed** only (first launch + Settings restore)
+- `LocalJSONArticleDataSource` imports demo content; user-created articles are stored separately (`isDemoSeed` flag)
+- DI container wires SwiftData implementation by default (`.local` configuration)
 
 ### Phase 2 (Prepared — Inactive by default)
 
@@ -79,11 +80,10 @@ enum DataSourceConfiguration {
 
 ## Consequences
 
-- `articles.json` contains 20–30 sample articles with realistic metadata
-- `DataTests` covers both `LocalArticleRepository` and `RemoteArticleRepository` (mocked via `URLProtocol`)
-- README documents how to switch to remote: change `DataSourceConfiguration` in `LiveDependencyContainer`
-- Search remains client-side in Phase 1; Phase 2 may add server-side search without ViewModel contract changes
-- Favorites remain SwiftData-local regardless of article data source
+- `articles.json` contains sample articles for demo seed and restore
+- `DataTests` covers `SwiftDataArticleRepository` CRUD and legacy `LocalArticleRepository` JSON loading
+- README documents CRUD flows and Settings → Restore Demo Articles
+- Pull-to-refresh reloads from SwiftData (ready for future iCloud sync or remote merge)
 
 ## Verification
 

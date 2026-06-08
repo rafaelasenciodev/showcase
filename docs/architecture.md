@@ -84,7 +84,7 @@ See [ADR-002](adr/ADR-002-dependency-injection.md).
 
 | Phase | Source | Status |
 |-------|--------|--------|
-| 1 | Bundled `articles.json` | Active default |
+| 1 | SwiftData local persistence + bundled JSON demo seed | Active default |
 | 2 | URLSession remote API | Implemented, switch via `DataSourceConfiguration` |
 
 Presentation and Domain layers are unchanged when swapping sources. See [ADR-003](adr/ADR-003-local-json-vs-remote-api.md).

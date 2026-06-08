@@ -2,7 +2,13 @@
 
 Production-inspired iOS portfolio project demonstrating **Clean Architecture**, **MVVM**, **SPM modularization**, **dependency injection**, and **comprehensive testing**.
 
-The Articles app (list, search, detail, favorites, settings) is intentionally simple — the focus is engineering quality, not feature complexity.
+The Articles app supports **local CRUD** (create, read, update, delete) with SwiftData persistence, plus search, favorites, and settings.
+
+## Articles Data
+
+- **Default storage**: SwiftData (`ArticleModel`) with full CRUD
+- **Demo content**: bundled `articles.json` seeds on first launch; restore anytime via **Settings → Restore Demo Articles**
+- **Remote API**: prepared in the `Networking` module, inactive by default — see [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md)
 
 ## Architecture
 
@@ -34,7 +40,7 @@ Packages/
 ├── Data/              # Repositories, DTOs, mappers, SwiftData
 ├── Networking/        # URLSession client and endpoints
 ├── DesignSystem/      # Reusable UI components
-├── FeatureArticles/   # List, detail, search
+├── FeatureArticles/   # List, detail, search, CRUD
 ├── FeatureFavorites/  # Favorites tab
 ├── FeatureSettings/   # Theme and app info
 └── SharedTesting/     # Fixtures and mocks
@@ -71,7 +77,7 @@ cd ../Data && swift test
 |-----|-------|
 | [ADR-001](docs/adr/ADR-001-architecture-selection.md) | Clean Architecture + MVVM |
 | [ADR-002](docs/adr/ADR-002-dependency-injection.md) | Constructor injection |
-| [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md) | Local JSON vs remote API |
+| [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md) | SwiftData CRUD + demo seed vs remote API |
 
 ## Testing
 
