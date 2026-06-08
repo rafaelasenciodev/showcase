@@ -1,0 +1,29 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# macOS
+.DS_Store
+
+# IDE / local tooling (not part of the public showcase)
+.idea/
+.vscode/
+.cursor/
+.specify/
+specs/
+
+# Logs & temp
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.*
