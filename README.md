@@ -6,6 +6,12 @@ Production-inspired iOS portfolio project demonstrating **Clean Architecture**, 
 
 The Articles app supports **local CRUD** (create, read, update, delete) with SwiftData persistence, plus search, favorites, and settings.
 
+## Screenshots
+
+| Articles | Detail | Settings |
+|:--------:|:------:|:--------:|
+| ![Articles list](docs/screenshots/articles-list.png) | ![Article detail](docs/screenshots/article-detail.png) | ![Settings](docs/screenshots/settings.png) |
+
 ## Articles Data
 
 - **Default storage**: SwiftData (`ArticleModel`) with full CRUD
@@ -13,23 +19,6 @@ The Articles app supports **local CRUD** (create, read, update, delete) with Swi
 - **Remote API**: prepared in the `Networking` module, inactive by default — see [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md)
 
 ## Architecture
-
-```mermaid
-graph TB
-    App[showcase App] --> FeatureArticles
-    App --> FeatureFavorites
-    App --> FeatureSettings
-    App --> Data
-    FeatureArticles --> Domain
-    FeatureArticles --> DesignSystem
-    FeatureFavorites --> Domain
-    FeatureSettings --> Domain
-    Data --> Domain
-    Data --> Networking
-    Domain --> Core
-    DesignSystem --> Core
-    Networking --> Core
-```
 
 See [docs/architecture.md](docs/architecture.md) for layer responsibilities, dependency rules, and testing strategy.
 
@@ -51,7 +40,7 @@ Packages/
 ## Getting Started
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/rafaelasenciodev/showcase.git
 cd showcase
 open showcase.xcodeproj
 ```
@@ -61,16 +50,19 @@ Run on an iOS 17+ simulator (⌘R).
 ```bash
 xcodebuild build -scheme showcase \
   -destination 'platform=iOS Simulator,name=iPhone 17'
-
-xcodebuild test -scheme showcase \
-  -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
-Package-level tests:
+Run all package tests from the repo root (works on macOS, no simulator required):
 
 ```bash
-cd Packages/Domain && swift test
-cd ../Data && swift test
+./scripts/run-package-tests.sh
+```
+
+For full app + UI tests in Xcode:
+
+```bash
+xcodebuild test -scheme showcase \
+  -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
 ## Architectural Decisions
@@ -99,4 +91,4 @@ GitHub Actions (`.github/workflows/ci.yml`) runs build, tests, and SPM package v
 
 ## License
 
-Available for portfolio and evaluation purposes. See repository settings for license details.
+[MIT](LICENSE)
