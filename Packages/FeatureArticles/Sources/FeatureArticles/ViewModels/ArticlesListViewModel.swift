@@ -16,6 +16,7 @@ public final class ArticlesListViewModel {
     private let fetchArticles: FetchArticlesUseCase
     private let searchArticles: SearchArticlesUseCase
     private let refreshArticles: RefreshArticlesUseCase
+    private let deleteArticle: DeleteArticleUseCase
     private let toggleFavorite: ToggleFavoriteUseCase
     private let fetchFavoriteIDs: () async throws -> [String]
 
@@ -25,12 +26,14 @@ public final class ArticlesListViewModel {
         fetchArticles: FetchArticlesUseCase,
         searchArticles: SearchArticlesUseCase,
         refreshArticles: RefreshArticlesUseCase,
+        deleteArticle: DeleteArticleUseCase,
         toggleFavorite: ToggleFavoriteUseCase,
         fetchFavoriteIDs: @escaping () async throws -> [String]
     ) {
         self.fetchArticles = fetchArticles
         self.searchArticles = searchArticles
         self.refreshArticles = refreshArticles
+        self.deleteArticle = deleteArticle
         self.toggleFavorite = toggleFavorite
         self.fetchFavoriteIDs = fetchFavoriteIDs
     }
@@ -62,6 +65,14 @@ public final class ArticlesListViewModel {
         } catch {
             viewState = .error(errorMessage(for: error))
         }
+    }
+
+    public func delete(_ article: Article) async throws {
+        try await deleteArticle.execute(id: article.id)
+        allArticles.removeAll { $0.id == article.id }
+        favoriteIDs.remove(article.id)
+        applySearch()
+        updateViewState()
     }
 
     public func isFavorite(_ article: Article) -> Bool {

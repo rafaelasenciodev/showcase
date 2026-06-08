@@ -1,3 +1,4 @@
+import Core
 import DesignSystem
 import Domain
 import SwiftUI
@@ -5,8 +6,18 @@ import SwiftUI
 public struct ArticlesListView: View {
     @Bindable private var viewModel: ArticlesListViewModel
 
-    public init(viewModel: ArticlesListViewModel) {
+    @State private var isCreating = false
+    @State private var articlePendingDeletion: Article?
+    @State private var deletionError: String?
+
+    private let makeEditorViewModel: () -> ArticleEditorViewModel
+
+    public init(
+        viewModel: ArticlesListViewModel,
+        makeEditorViewModel: @escaping () -> ArticleEditorViewModel
+    ) {
         self.viewModel = viewModel
+        self.makeEditorViewModel = makeEditorViewModel
     }
 
     public var body: some View {
@@ -18,10 +29,12 @@ public struct ArticlesListView: View {
                 EmptyStateView(
                     title: viewModel.searchText.isEmpty ? "No Articles" : "No Results",
                     message: viewModel.searchText.isEmpty
-                        ? "Articles will appear here once loaded."
+                        ? "Tap + to create your first article."
                         : "Try a different search term.",
-                    actionTitle: viewModel.searchText.isEmpty ? nil : "Clear Search",
-                    action: viewModel.searchText.isEmpty ? nil : { viewModel.searchText = "" }
+                    actionTitle: viewModel.searchText.isEmpty ? "Create Article" : "Clear Search",
+                    action: viewModel.searchText.isEmpty
+                        ? { isCreating = true }
+                        : { viewModel.searchText = "" }
                 )
             case let .loaded(articles):
                 List(articles) { article in
@@ -37,6 +50,13 @@ public struct ArticlesListView: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            articlePendingDeletion = article
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .listStyle(.plain)
                 .refreshable {
@@ -50,6 +70,58 @@ public struct ArticlesListView: View {
         }
         .navigationTitle("Articles")
         .searchable(text: $viewModel.searchText, prompt: "Search articles")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isCreating = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("Create article")
+            }
+        }
+        .sheet(isPresented: $isCreating, onDismiss: {
+            Task { await viewModel.refresh() }
+        }) {
+            ArticleEditorView(viewModel: makeEditorViewModel())
+        }
+        .confirmationDialog(
+            "Delete Article?",
+            isPresented: Binding(
+                get: { articlePendingDeletion != nil },
+                set: { if !$0 { articlePendingDeletion = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                guard let article = articlePendingDeletion else { return }
+                Task {
+                    do {
+                        try await viewModel.delete(article)
+                        articlePendingDeletion = nil
+                    } catch {
+                        deletionError = (error as? DomainError)?.userMessage ?? DomainError.loadFailed.userMessage
+                        articlePendingDeletion = nil
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                articlePendingDeletion = nil
+            }
+        } message: {
+            Text("This action cannot be undone. Any favorites for this article will also be removed.")
+        }
+        .alert(
+            "Unable to Delete",
+            isPresented: Binding(
+                get: { deletionError != nil },
+                set: { if !$0 { deletionError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) { deletionError = nil }
+        } message: {
+            Text(deletionError ?? "")
+        }
         .task {
             await viewModel.onAppear()
         }

@@ -11,23 +11,41 @@ public final class ArticleDetailViewModel {
 
     private let articleId: String
     private let fetchDetail: FetchArticleDetailUseCase
+    private let deleteArticle: DeleteArticleUseCase
     private let toggleFavoriteUseCase: ToggleFavoriteUseCase
     private let isFavoriteCheck: (String) async throws -> Bool
 
     public init(
         articleId: String,
         fetchDetail: FetchArticleDetailUseCase,
+        deleteArticle: DeleteArticleUseCase,
         toggleFavoriteUseCase: ToggleFavoriteUseCase,
         isFavoriteCheck: @escaping (String) async throws -> Bool
     ) {
         self.articleId = articleId
         self.fetchDetail = fetchDetail
+        self.deleteArticle = deleteArticle
         self.toggleFavoriteUseCase = toggleFavoriteUseCase
         self.isFavoriteCheck = isFavoriteCheck
     }
 
+    public var currentArticle: Article? {
+        if case let .loaded(article) = viewState {
+            return article
+        }
+        return nil
+    }
+
     public func onAppear() async {
         await load()
+    }
+
+    public func applyUpdated(_ article: Article) {
+        viewState = .loaded(article)
+    }
+
+    public func delete() async throws {
+        try await deleteArticle.execute(id: articleId)
     }
 
     public func toggleFavorite() async {

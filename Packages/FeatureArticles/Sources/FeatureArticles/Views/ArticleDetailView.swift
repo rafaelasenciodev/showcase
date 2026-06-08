@@ -5,9 +5,20 @@ import SwiftUI
 
 public struct ArticleDetailView: View {
     @Bindable private var viewModel: ArticleDetailViewModel
+    @Environment(\.dismiss) private var dismiss
 
-    public init(viewModel: ArticleDetailViewModel) {
+    @State private var isEditing = false
+    @State private var isDeleteConfirmationPresented = false
+    @State private var actionError: String?
+
+    private let makeEditorViewModel: (Article) -> ArticleEditorViewModel
+
+    public init(
+        viewModel: ArticleDetailViewModel,
+        makeEditorViewModel: @escaping (Article) -> ArticleEditorViewModel
+    ) {
         self.viewModel = viewModel
+        self.makeEditorViewModel = makeEditorViewModel
     }
 
     public var body: some View {
@@ -44,7 +55,23 @@ public struct ArticleDetailView: View {
         .navigationTitle("Detail")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if viewModel.currentArticle != nil {
+                    Button {
+                        isEditing = true
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    .accessibilityLabel("Edit article")
+
+                    Button(role: .destructive) {
+                        isDeleteConfirmationPresented = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .accessibilityLabel("Delete article")
+                }
+
                 Button {
                     Task { await viewModel.toggleFavorite() }
                 } label: {
@@ -52,6 +79,43 @@ public struct ArticleDetailView: View {
                         .foregroundStyle(viewModel.isFavorite ? .red : AppColors.textPrimary)
                 }
             }
+        }
+        .sheet(isPresented: $isEditing, onDismiss: {
+            Task { await viewModel.onAppear() }
+        }) {
+            if let article = viewModel.currentArticle {
+                ArticleEditorView(viewModel: makeEditorViewModel(article))
+            }
+        }
+        .confirmationDialog(
+            "Delete Article?",
+            isPresented: $isDeleteConfirmationPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    do {
+                        try await viewModel.delete()
+                        dismiss()
+                    } catch {
+                        actionError = (error as? DomainError)?.userMessage ?? DomainError.loadFailed.userMessage
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone. Any favorites for this article will also be removed.")
+        }
+        .alert(
+            "Unable to Delete",
+            isPresented: Binding(
+                get: { actionError != nil },
+                set: { if !$0 { actionError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) { actionError = nil }
+        } message: {
+            Text(actionError ?? "")
         }
         .task {
             await viewModel.onAppear()
