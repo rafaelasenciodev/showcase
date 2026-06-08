@@ -6,6 +6,8 @@ public enum DomainError: Error, Equatable, Sendable {
     case persistenceFailed
     case networkUnavailable
     case decodingFailed
+    case validationFailed(String)
+    case unsupportedOperation
 
     public var userMessage: String {
         switch self {
@@ -19,6 +21,10 @@ public enum DomainError: Error, Equatable, Sendable {
             "Network unavailable. Check your connection."
         case .decodingFailed:
             "The content format is invalid."
+        case let .validationFailed(message):
+            message
+        case .unsupportedOperation:
+            "This operation is not available for the current data source."
         }
     }
 }
