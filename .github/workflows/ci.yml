@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main, '**']
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -scheme showcase \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -quiet
+
+      - name: Test
+        run: |
+          xcodebuild test \
+            -scheme showcase \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -quiet
+
+      - name: Validate SPM packages
+        run: ./scripts/validate-packages.sh
