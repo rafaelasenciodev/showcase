@@ -1,0 +1,68 @@
+{
+  "articles": [
+    {
+      "id": "swift-concurrency-2024",
+      "title": "Understanding Swift Concurrency",
+      "author": "Jane Appleseed",
+      "publishedAt": "2024-03-15T09:30:00Z",
+      "summary": "A practical guide to async/await and actors in Swift 6.",
+      "content": "Swift concurrency introduces structured concurrency patterns that improve safety and performance across Apple platforms."
+    },
+    {
+      "id": "clean-architecture-ios",
+      "title": "Clean Architecture on iOS",
+      "author": "John Architect",
+      "publishedAt": "2024-02-10T14:00:00Z",
+      "summary": "Layer separation with MVVM in SwiftUI applications.",
+      "content": "Clean Architecture keeps business rules independent from frameworks and UI, enabling testable and maintainable codebases."
+    },
+    {
+      "id": "swiftdata-favorites",
+      "title": "Persisting Favorites with SwiftData",
+      "author": "Alex Developer",
+      "publishedAt": "2024-01-20T11:15:00Z",
+      "summary": "Local persistence patterns for user-curated content.",
+      "content": "SwiftData integrates with SwiftUI for modern persistence workflows without Core Data boilerplate."
+    },
+    {
+      "id": "spm-modularization",
+      "title": "Modularizing iOS Apps with SPM",
+      "author": "Maria Modules",
+      "publishedAt": "2023-12-05T08:45:00Z",
+      "summary": "Compile-time boundaries for scalable Swift projects.",
+      "content": "Swift Package Manager enables feature modules with explicit dependency graphs enforced at build time."
+    },
+    {
+      "id": "dependency-injection-swift",
+      "title": "Dependency Injection in Swift",
+      "author": "Chris Container",
+      "publishedAt": "2023-11-18T16:20:00Z",
+      "summary": "Constructor injection without singletons.",
+      "content": "Protocol-oriented constructor injection makes dependencies explicit and improves unit testability."
+    },
+    {
+      "id": "repository-pattern",
+      "title": "The Repository Pattern Explained",
+      "author": "Dana Data",
+      "publishedAt": "2023-10-02T10:00:00Z",
+      "summary": "Abstracting data sources behind stable domain contracts.",
+      "content": "Repositories hide whether data comes from JSON, a database, or a remote API from the rest of the application."
+    },
+    {
+      "id": "swift-testing",
+      "title": "Modern Testing with Swift Testing",
+      "author": "Taylor Test",
+      "publishedAt": "2023-09-14T13:30:00Z",
+      "summary": "Macro-based tests for domain and presentation layers.",
+      "content": "Swift Testing provides expressive test definitions that complement XCTest for UI automation."
+    },
+    {
+      "id": "swiftui-previews",
+      "title": "Effective SwiftUI Previews",
+      "author": "Pat Preview",
+      "publishedAt": "2023-08-22T09:00:00Z",
+      "summary": "Preview-driven UI development with mock dependencies.",
+      "content": "Previews accelerate iteration when ViewModels accept injected use cases and mock repositories."
+    }
+  ]
+}
