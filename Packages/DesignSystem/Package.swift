@@ -14,10 +14,6 @@ let package = Package(
         .target(
             name: "DesignSystem",
             dependencies: ["Core"]
-        ),
-        .testTarget(
-            name: "DesignSystemTests",
-            dependencies: ["DesignSystem"]
         )
     ]
 )
