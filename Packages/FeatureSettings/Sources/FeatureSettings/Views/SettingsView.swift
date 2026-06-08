@@ -5,6 +5,8 @@ import SwiftUI
 public struct SettingsView: View {
     @Bindable private var viewModel: SettingsViewModel
 
+    @State private var isRestoreConfirmationPresented = false
+
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
@@ -25,6 +27,19 @@ public struct SettingsView: View {
                             }
                         }
                     }
+
+                    Section("Articles") {
+                        Button("Restore Demo Articles") {
+                            isRestoreConfirmationPresented = true
+                        }
+
+                        if let restoreMessage = viewModel.restoreMessage {
+                            Text(restoreMessage)
+                                .font(AppTypography.caption)
+                                .foregroundStyle(AppColors.textSecondary)
+                        }
+                    }
+
                     Section("About") {
                         LabeledContent("Version", value: settings.appVersion)
                     }
@@ -43,6 +58,18 @@ public struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .confirmationDialog(
+            "Restore Demo Articles?",
+            isPresented: $isRestoreConfirmationPresented,
+            titleVisibility: .visible
+        ) {
+            Button("Restore") {
+                Task { await viewModel.restoreDemoContent() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Demo articles from the bundled catalog will be re-imported. Your custom articles are kept.")
+        }
         .task {
             if viewModel.settings == nil {
                 await viewModel.onAppear()
