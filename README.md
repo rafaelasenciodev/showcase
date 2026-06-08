@@ -1,5 +1,7 @@
 # SwiftUI Architecture Showcase
 
+![CI](https://github.com/rafaelasenciodev/showcase/actions/workflows/ci.yml/badge.svg)
+
 Production-inspired iOS portfolio project demonstrating **Clean Architecture**, **MVVM**, **SPM modularization**, **dependency injection**, and **comprehensive testing**.
 
 The Articles app supports **local CRUD** (create, read, update, delete) with SwiftData persistence, plus search, favorites, and settings.
