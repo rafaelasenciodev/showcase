@@ -72,6 +72,18 @@ public struct ArticlesListView: View {
             }
         }
         .navigationTitle("Articles")
+        .overlay(alignment: .top) {
+            if viewModel.networkMonitor.shouldShowBackOnlineBanner {
+                Text("Back online — pull down to sync")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(AppColors.primary)
+                    .clipShape(Capsule())
+                    .padding(.top, 8)
+            }
+        }
         .searchable(text: $viewModel.searchText, prompt: "Search articles")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

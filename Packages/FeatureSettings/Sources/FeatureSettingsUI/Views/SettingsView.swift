@@ -30,6 +30,18 @@ public struct SettingsView: View {
                         }
                     }
 
+                    Section("Sync") {
+                        Toggle("Remote Sync", isOn: Binding(
+                            get: { settings.isRemoteSyncEnabled },
+                            set: { enabled in
+                                Task { await viewModel.setRemoteSyncEnabled(enabled) }
+                            }
+                        ))
+                        Text("Pull down on Articles to sync user-created content with the remote API.")
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+
                     Section("Articles") {
                         Button("Restore Demo Articles") {
                             isRestoreConfirmationPresented = true
