@@ -9,11 +9,10 @@ public final class ArticleModel {
     public var publishedAt: Date
     public var summary: String
     public var content: String
-    /// Default supports lightweight migration for stores created before remote sync.
-    public var updatedAt: Date = Date(timeIntervalSince1970: 0)
-    public var isDemoSeed: Bool = false
-    public var isOnRemote: Bool = false
-    public var needsSyncPush: Bool = false
+    public var updatedAt: Date
+    public var isDemoSeed: Bool
+    public var isOnRemote: Bool
+    public var needsSyncPush: Bool
 
     public init(
         id: String,

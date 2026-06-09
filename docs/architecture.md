@@ -132,3 +132,4 @@ main → develop → feature/*
 - [ADR-001: Architecture Selection](adr/ADR-001-architecture-selection.md)
 - [ADR-002: Dependency Injection](adr/ADR-002-dependency-injection.md)
 - [ADR-003: Local JSON vs Remote API](adr/ADR-003-local-json-vs-remote-api.md)
+- [ADR-004: SwiftData Schema Migrations](adr/ADR-004-swiftdata-schema-migrations.md)

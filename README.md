@@ -74,6 +74,7 @@ xcodebuild test -scheme showcase \
 | [ADR-001](docs/adr/ADR-001-architecture-selection.md) | Clean Architecture + MVVM |
 | [ADR-002](docs/adr/ADR-002-dependency-injection.md) | Constructor injection |
 | [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md) | SwiftData CRUD + demo seed vs remote API |
+| [ADR-004](docs/adr/ADR-004-swiftdata-schema-migrations.md) | VersionedSchema + SchemaMigrationPlan |
 
 ## Testing
 
