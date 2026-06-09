@@ -13,6 +13,7 @@ struct showcaseApp: App {
     init() {
         do {
             modelContainer = try ModelContainer(for: FavoriteArticleModel.self, ArticleModel.self)
+            try ArticleMetadataBackfill.applyIfNeeded(modelContext: modelContainer.mainContext)
             dependencyContainer = LiveDependencyContainer(
                 modelContext: modelContainer.mainContext
             )
