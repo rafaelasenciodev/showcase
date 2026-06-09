@@ -61,6 +61,7 @@ private final class RecordingArticleRepository: ArticleRepositoryProtocol, @unch
     func fetchArticles() async throws -> [Article] { [] }
     func fetchArticle(id: String) async throws -> Article { throw DomainError.notFound }
     func refreshArticles() async throws -> [Article] { [] }
+    func syncWithRemote() async throws -> [Article] { [] }
     func createArticle(_ draft: ArticleDraft) async throws -> Article {
         createCallCount += 1
         return Article(

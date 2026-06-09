@@ -8,7 +8,8 @@ public final class MockSettingsRepository: SettingsRepositoryProtocol {
     public init(settings: AppSettings = AppSettings(
         theme: .system,
         appVersion: "1.0",
-        architectureInfo: "Test architecture info"
+        architectureInfo: "Test architecture info",
+        isRemoteSyncEnabled: true
     )) {
         self.settings = settings
     }
@@ -21,7 +22,17 @@ public final class MockSettingsRepository: SettingsRepositoryProtocol {
         settings = AppSettings(
             theme: theme,
             appVersion: settings.appVersion,
-            architectureInfo: settings.architectureInfo
+            architectureInfo: settings.architectureInfo,
+            isRemoteSyncEnabled: settings.isRemoteSyncEnabled
+        )
+    }
+
+    public func saveRemoteSyncEnabled(_ enabled: Bool) async throws {
+        settings = AppSettings(
+            theme: settings.theme,
+            appVersion: settings.appVersion,
+            architectureInfo: settings.architectureInfo,
+            isRemoteSyncEnabled: enabled
         )
     }
 }
