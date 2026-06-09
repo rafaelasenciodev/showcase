@@ -7,6 +7,11 @@ struct ArticleDTO: Codable, Sendable, Equatable {
     let publishedAt: Date
     let summary: String
     let content: String
+    let updatedAt: Date?
+
+    var resolvedUpdatedAt: Date {
+        updatedAt ?? publishedAt
+    }
 }
 
 struct ArticlesResponseDTO: Codable, Sendable, Equatable {

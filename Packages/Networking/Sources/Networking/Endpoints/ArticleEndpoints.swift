@@ -5,7 +5,33 @@ public enum ArticleEndpoints {
         Endpoint(
             path: "/articles",
             method: .get,
-            headers: ["Accept": "application/json"]
+            headers: jsonHeaders
+        )
+    }
+
+    public static func createArticle(body: Data) -> Endpoint {
+        Endpoint(
+            path: "/articles",
+            method: .post,
+            headers: jsonHeaders,
+            body: body
+        )
+    }
+
+    public static func updateArticle(id: String, body: Data) -> Endpoint {
+        Endpoint(
+            path: "/articles/\(id)",
+            method: .put,
+            headers: jsonHeaders,
+            body: body
+        )
+    }
+
+    public static func deleteArticle(id: String) -> Endpoint {
+        Endpoint(
+            path: "/articles/\(id)",
+            method: .delete,
+            headers: jsonHeaders
         )
     }
 
@@ -13,7 +39,12 @@ public enum ArticleEndpoints {
         Endpoint(
             path: "/articles/\(id)",
             method: .get,
-            headers: ["Accept": "application/json"]
+            headers: jsonHeaders
         )
     }
+
+    private static let jsonHeaders = [
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    ]
 }

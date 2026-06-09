@@ -1,3 +1,4 @@
+import Core
 import Domain
 import FeatureArticlesCore
 import SharedTesting
@@ -16,7 +17,8 @@ struct ArticlesListViewModelTests {
             refreshArticles: RefreshArticlesUseCase(repository: repository),
             deleteArticle: DeleteArticleUseCase(repository: repository),
             toggleFavorite: ToggleFavoriteUseCase(repository: favorites),
-            fetchFavoriteIDs: { try await favorites.fetchFavoriteIDs() }
+            fetchFavoriteIDs: { try await favorites.fetchFavoriteIDs() },
+            networkMonitor: NetworkConnectivityMonitor()
         )
         await viewModel.onAppear()
         if case let .loaded(articles) = viewModel.viewState {

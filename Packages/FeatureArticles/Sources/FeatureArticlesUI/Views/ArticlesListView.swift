@@ -62,16 +62,39 @@ public struct ArticlesListView: View {
                     }
                 }
                 .listStyle(.plain)
-                .refreshable {
-                    await viewModel.refresh()
-                }
             case let .error(message):
                 ErrorStateView(message: message) {
                     Task { await viewModel.onAppear() }
                 }
             }
         }
+        .refreshable {
+            await viewModel.refresh()
+        }
         .navigationTitle("Articles")
+        .overlay(alignment: .top) {
+            VStack(spacing: 8) {
+                if viewModel.networkMonitor.shouldShowBackOnlineBanner {
+                    Text("Back online — pull down to sync")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(AppColors.primary)
+                        .clipShape(Capsule())
+                }
+                if let syncError = viewModel.syncErrorMessage {
+                    Text(syncError)
+                        .font(AppTypography.caption)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.red.opacity(0.9))
+                        .clipShape(Capsule())
+                }
+            }
+            .padding(.top, 8)
+        }
         .searchable(text: $viewModel.searchText, prompt: "Search articles")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

@@ -35,6 +35,10 @@ public final class LocalArticleRepository: ArticleRepositoryProtocol, @unchecked
         return articles
     }
 
+    public func syncWithRemote() async throws -> [Article] {
+        throw DomainError.unsupportedOperation
+    }
+
     public func createArticle(_ draft: ArticleDraft) async throws -> Article {
         throw DomainError.unsupportedOperation
     }

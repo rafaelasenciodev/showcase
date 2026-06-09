@@ -12,6 +12,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             fetchSettings: FetchSettingsUseCase(repository: repository),
             updateTheme: UpdateThemeUseCase(repository: repository),
+            updateRemoteSync: UpdateRemoteSyncUseCase(repository: repository),
             restoreDemoArticles: RestoreDemoArticlesUseCase(repository: MockArticleRepository())
         )
         await viewModel.onAppear()
@@ -24,6 +25,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             fetchSettings: FetchSettingsUseCase(repository: repository),
             updateTheme: UpdateThemeUseCase(repository: repository),
+            updateRemoteSync: UpdateRemoteSyncUseCase(repository: repository),
             restoreDemoArticles: RestoreDemoArticlesUseCase(repository: MockArticleRepository())
         )
         await viewModel.onAppear()

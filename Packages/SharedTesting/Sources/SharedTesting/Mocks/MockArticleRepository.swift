@@ -28,6 +28,10 @@ public final class MockArticleRepository: ArticleRepositoryProtocol, @unchecked 
         try await fetchArticles()
     }
 
+    public func syncWithRemote() async throws -> [Article] {
+        try await refreshArticles()
+    }
+
     public func createArticle(_ draft: ArticleDraft) async throws -> Article {
         if let shouldThrow { throw shouldThrow }
         let article = Article(

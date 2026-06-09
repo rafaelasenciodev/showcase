@@ -11,6 +11,8 @@ import SwiftData
 
 @MainActor
 final class LiveDependencyContainer: DependencyContaining {
+    let networkMonitor = NetworkConnectivityMonitor()
+
     private let articleRepository: ArticleRepositoryProtocol
     private let favoriteRepository: FavoriteRepositoryProtocol
     private let settingsRepository: SettingsRepositoryProtocol
@@ -23,7 +25,8 @@ final class LiveDependencyContainer: DependencyContaining {
         toggleFavorite: ToggleFavoriteUseCase(repository: favoriteRepository),
         fetchFavoriteIDs: { [favoriteRepository] in
             try await favoriteRepository.fetchFavoriteIDs()
-        }
+        },
+        networkMonitor: networkMonitor
     )
 
     private(set) lazy var favoritesViewModel = FavoritesViewModel(
@@ -37,6 +40,7 @@ final class LiveDependencyContainer: DependencyContaining {
     private(set) lazy var settingsViewModel = SettingsViewModel(
         fetchSettings: FetchSettingsUseCase(repository: settingsRepository),
         updateTheme: UpdateThemeUseCase(repository: settingsRepository),
+        updateRemoteSync: UpdateRemoteSyncUseCase(repository: settingsRepository),
         restoreDemoArticles: RestoreDemoArticlesUseCase(repository: articleRepository)
     )
 

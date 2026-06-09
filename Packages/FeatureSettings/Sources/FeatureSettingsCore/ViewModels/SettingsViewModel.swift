@@ -12,6 +12,7 @@ public final class SettingsViewModel {
 
     private let fetchSettings: FetchSettingsUseCase
     private let updateTheme: UpdateThemeUseCase
+    private let updateRemoteSync: UpdateRemoteSyncUseCase
     private let restoreDemoArticles: RestoreDemoArticlesUseCase
 
     public var onThemeChanged: ((AppTheme) -> Void)?
@@ -20,10 +21,12 @@ public final class SettingsViewModel {
     public init(
         fetchSettings: FetchSettingsUseCase,
         updateTheme: UpdateThemeUseCase,
+        updateRemoteSync: UpdateRemoteSyncUseCase,
         restoreDemoArticles: RestoreDemoArticlesUseCase
     ) {
         self.fetchSettings = fetchSettings
         self.updateTheme = updateTheme
+        self.updateRemoteSync = updateRemoteSync
         self.restoreDemoArticles = restoreDemoArticles
     }
 
@@ -36,20 +39,31 @@ public final class SettingsViewModel {
     public func selectTheme(_ theme: AppTheme) async {
         do {
             try await updateTheme.execute(theme: theme)
-            let current: AppSettings
-            if let settings {
-                current = settings
-            } else {
-                current = await fetchSettings.execute()
+            applySettingsUpdate { current in
+                AppSettings(
+                    theme: theme,
+                    appVersion: current.appVersion,
+                    architectureInfo: current.architectureInfo,
+                    isRemoteSyncEnabled: current.isRemoteSyncEnabled
+                )
             }
-            let updated = AppSettings(
-                theme: theme,
-                appVersion: current.appVersion,
-                architectureInfo: current.architectureInfo
-            )
-            settings = updated
-            viewState = .loaded(updated)
             onThemeChanged?(theme)
+        } catch {
+            viewState = .error(DomainError.persistenceFailed.userMessage)
+        }
+    }
+
+    public func setRemoteSyncEnabled(_ enabled: Bool) async {
+        do {
+            try await updateRemoteSync.execute(enabled: enabled)
+            applySettingsUpdate { current in
+                AppSettings(
+                    theme: current.theme,
+                    appVersion: current.appVersion,
+                    architectureInfo: current.architectureInfo,
+                    isRemoteSyncEnabled: enabled
+                )
+            }
         } catch {
             viewState = .error(DomainError.persistenceFailed.userMessage)
         }
@@ -66,5 +80,17 @@ public final class SettingsViewModel {
         } catch {
             restoreMessage = DomainError.loadFailed.userMessage
         }
+    }
+
+    private func applySettingsUpdate(_ transform: (AppSettings) -> AppSettings) {
+        let current: AppSettings
+        if let settings {
+            current = settings
+        } else {
+            return
+        }
+        let updated = transform(current)
+        settings = updated
+        viewState = .loaded(updated)
     }
 }

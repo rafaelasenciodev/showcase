@@ -15,4 +15,6 @@ public protocol APIClientProtocol: Sendable {
         _ endpoint: Endpoint,
         responseType: T.Type
     ) async throws -> T
+
+    func request(_ endpoint: Endpoint) async throws
 }

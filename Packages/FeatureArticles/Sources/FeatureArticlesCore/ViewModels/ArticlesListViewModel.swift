@@ -12,6 +12,7 @@ public final class ArticlesListViewModel {
         didSet { applySearch() }
     }
     public private(set) var favoriteIDs: Set<String> = []
+    public private(set) var syncErrorMessage: String?
 
     private let fetchArticles: FetchArticlesUseCase
     private let searchArticles: SearchArticlesUseCase
@@ -19,6 +20,7 @@ public final class ArticlesListViewModel {
     private let deleteArticle: DeleteArticleUseCase
     private let toggleFavorite: ToggleFavoriteUseCase
     private let fetchFavoriteIDs: () async throws -> [String]
+    public let networkMonitor: NetworkConnectivityMonitor
 
     private var allArticles: [Article] = []
 
@@ -28,7 +30,8 @@ public final class ArticlesListViewModel {
         refreshArticles: RefreshArticlesUseCase,
         deleteArticle: DeleteArticleUseCase,
         toggleFavorite: ToggleFavoriteUseCase,
-        fetchFavoriteIDs: @escaping () async throws -> [String]
+        fetchFavoriteIDs: @escaping () async throws -> [String],
+        networkMonitor: NetworkConnectivityMonitor
     ) {
         self.fetchArticles = fetchArticles
         self.searchArticles = searchArticles
@@ -36,6 +39,7 @@ public final class ArticlesListViewModel {
         self.deleteArticle = deleteArticle
         self.toggleFavorite = toggleFavorite
         self.fetchFavoriteIDs = fetchFavoriteIDs
+        self.networkMonitor = networkMonitor
     }
 
     public func onAppear() async {
@@ -43,18 +47,22 @@ public final class ArticlesListViewModel {
     }
 
     public func refresh() async {
-        viewState = .loading
+        networkMonitor.dismissBackOnlineBanner()
+        syncErrorMessage = nil
         do {
             allArticles = try await refreshArticles.execute()
             try await loadFavoriteIDs()
             applySearch()
             updateViewState()
         } catch {
-            if allArticles.isEmpty {
-                viewState = .error(errorMessage(for: error))
-            } else {
+            if let local = try? await fetchArticles.execute() {
+                allArticles = local
                 applySearch()
+                updateViewState()
+            } else if allArticles.isEmpty {
+                viewState = .error(errorMessage(for: error))
             }
+            syncErrorMessage = errorMessage(for: error)
         }
     }
 

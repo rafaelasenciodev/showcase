@@ -5,6 +5,7 @@ import Foundation
 public final class UserDefaultsSettingsRepository: SettingsRepositoryProtocol {
     private let defaults: UserDefaults
     private let themeKey = "app_theme"
+    private let remoteSyncKey = "remote_sync_enabled"
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -16,12 +17,24 @@ public final class UserDefaultsSettingsRepository: SettingsRepositoryProtocol {
         return AppSettings(
             theme: theme,
             appVersion: Bundle.main.appVersion,
-            architectureInfo: Self.architectureInfo
+            architectureInfo: Self.architectureInfo,
+            isRemoteSyncEnabled: isRemoteSyncEnabled
         )
     }
 
     public func saveTheme(_ theme: AppTheme) async throws {
         defaults.set(theme.rawValue, forKey: themeKey)
+    }
+
+    public func saveRemoteSyncEnabled(_ enabled: Bool) async throws {
+        defaults.set(enabled, forKey: remoteSyncKey)
+    }
+
+    private var isRemoteSyncEnabled: Bool {
+        if defaults.object(forKey: remoteSyncKey) == nil {
+            return true
+        }
+        return defaults.bool(forKey: remoteSyncKey)
     }
 
     private static let architectureInfo = """

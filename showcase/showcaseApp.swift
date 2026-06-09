@@ -12,7 +12,7 @@ struct showcaseApp: App {
 
     init() {
         do {
-            modelContainer = try ModelContainer(for: FavoriteArticleModel.self, ArticleModel.self)
+            modelContainer = try ShowcaseModelContainerFactory.make()
             dependencyContainer = LiveDependencyContainer(
                 modelContext: modelContainer.mainContext
             )

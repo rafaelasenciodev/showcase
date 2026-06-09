@@ -15,8 +15,10 @@ The Articles app supports **local CRUD** (create, read, update, delete) with Swi
 ## Articles Data
 
 - **Default storage**: SwiftData (`ArticleModel`) with full CRUD
-- **Demo content**: bundled `articles.json` seeds on first launch; restore anytime via **Settings → Restore Demo Articles**
-- **Remote API**: prepared in the `Networking` module, inactive by default — see [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md)
+- **Demo content**: 3 bundled articles (`isDemoSeed`) — local only, never synced to remote
+- **User articles**: sync with [mockapi.io](https://mockapi.io) on pull-to-refresh when **Remote Sync** is enabled (Settings, on by default)
+- **Offline**: local-first; banner prompts pull-to-refresh when back online
+- **Conflict policy**: last-write-wins by `updatedAt`; tie → remote wins
 
 ## Architecture
 
@@ -72,6 +74,7 @@ xcodebuild test -scheme showcase \
 | [ADR-001](docs/adr/ADR-001-architecture-selection.md) | Clean Architecture + MVVM |
 | [ADR-002](docs/adr/ADR-002-dependency-injection.md) | Constructor injection |
 | [ADR-003](docs/adr/ADR-003-local-json-vs-remote-api.md) | SwiftData CRUD + demo seed vs remote API |
+| [ADR-004](docs/adr/ADR-004-swiftdata-schema-migrations.md) | VersionedSchema + SchemaMigrationPlan |
 
 ## Testing
 

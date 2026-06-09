@@ -29,12 +29,14 @@ Implement a **two-phase data strategy** behind a unified `ArticleRepositoryProto
 - `LocalJSONArticleDataSource` imports demo content; user-created articles are stored separately (`isDemoSeed` flag)
 - DI container wires SwiftData implementation by default (`.local` configuration)
 
-### Phase 2 (Prepared — Inactive by default)
+### Phase 2 (Active — hybrid sync)
 
-- `Networking` module provides `APIClientProtocol`, `Endpoint`, `URLSessionAPIClient`
-- `RemoteArticleDataSource` fetches from configurable base URL
-- `RemoteArticleRepository` implements same `ArticleRepositoryProtocol`
-- `DataSourceConfiguration` enum selects `.local` or `.remote(baseURL:)` at composition root
+- `Networking` module: `URLSessionAPIClient`, CRUD endpoints, mockapi.io integration
+- `ArticleRemoteSyncService`: pull → merge (LWW by `updatedAt`) → push on pull-to-refresh
+- Demo articles (`isDemoSeed`) remain local-only; user-created articles sync to remote
+- Remote deletions propagate to the app on sync; favorites cascade locally
+- Settings toggle **Remote Sync** (default on); URL hardcoded to mockapi project
+- See [ADR-003](adr/ADR-003-local-json-vs-remote-api.md)
 
 ### Shared contract
 
