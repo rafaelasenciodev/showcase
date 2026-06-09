@@ -1,16 +1,45 @@
 import Core
 import Domain
 import Foundation
+import Networking
 import SwiftData
 
 @MainActor
 public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
     private let modelContext: ModelContext
     private let seeder: DemoArticleSeeder
+    private let remoteSyncSettings: RemoteSyncSettingsStore
+    private let deletionStore: PendingRemoteDeletionStore
+    private let syncService: ArticleRemoteSyncService?
 
     public init(modelContext: ModelContext) {
         self.modelContext = modelContext
+        self.remoteSyncSettings = RemoteSyncSettingsStore()
+        self.deletionStore = PendingRemoteDeletionStore()
         self.seeder = DemoArticleSeeder()
+
+        let configuration = NetworkConfiguration(baseURL: RemoteAPIConfiguration.baseURL)
+        let client = URLSessionAPIClient(configuration: configuration)
+        let api = RemoteArticleAPI(client: client)
+        self.syncService = ArticleRemoteSyncService(
+            modelContext: modelContext,
+            api: api,
+            deletionStore: deletionStore
+        )
+    }
+
+    init(
+        modelContext: ModelContext,
+        remoteSyncSettings: RemoteSyncSettingsStore,
+        deletionStore: PendingRemoteDeletionStore,
+        seeder: DemoArticleSeeder,
+        syncService: ArticleRemoteSyncService?
+    ) {
+        self.modelContext = modelContext
+        self.remoteSyncSettings = remoteSyncSettings
+        self.deletionStore = deletionStore
+        self.seeder = seeder
+        self.syncService = syncService
     }
 
     public func fetchArticles() async throws -> [Article] {
@@ -42,7 +71,24 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
     }
 
     public func refreshArticles() async throws -> [Article] {
-        try await fetchArticles()
+        if remoteSyncSettings.isEnabled {
+            try await syncWithRemote()
+        }
+        return try await fetchArticles()
+    }
+
+    public func syncWithRemote() async throws -> [Article] {
+        guard let syncService else { throw DomainError.loadFailed }
+        do {
+            try await syncService.sync()
+            return try await fetchArticles()
+        } catch let error as DomainError {
+            throw error
+        } catch let error as NetworkError {
+            throw map(error)
+        } catch {
+            throw DomainError.networkUnavailable
+        }
     }
 
     public func createArticle(_ draft: ArticleDraft) async throws -> Article {
@@ -66,6 +112,9 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
                 throw DomainError.notFound
             }
             ArticlePersistenceMapper.apply(draft, to: model)
+            if !model.isDemoSeed {
+                model.needsSyncPush = true
+            }
             try save()
             return ArticlePersistenceMapper.toDomain(model)
         } catch let error as DomainError {
@@ -82,6 +131,9 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
         do {
             guard let model = try modelContext.fetch(descriptor).first else {
                 throw DomainError.notFound
+            }
+            if !model.isDemoSeed && model.isOnRemote {
+                deletionStore.add(id: id)
             }
             try deleteFavorites(for: id)
             modelContext.delete(model)
@@ -114,6 +166,19 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
             try modelContext.save()
         } catch {
             throw DomainError.persistenceFailed
+        }
+    }
+
+    private func map(_ error: NetworkError) -> DomainError {
+        switch error {
+        case .notFound:
+            .notFound
+        case .noConnection, .timeout:
+            .networkUnavailable
+        case .decodingFailed, .encodingFailed:
+            .decodingFailed
+        default:
+            .loadFailed
         }
     }
 }

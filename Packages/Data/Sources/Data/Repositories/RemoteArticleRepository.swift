@@ -32,6 +32,10 @@ public final class RemoteArticleRepository: ArticleRepositoryProtocol, @unchecke
         return articles
     }
 
+    public func syncWithRemote() async throws -> [Article] {
+        try await refreshArticles()
+    }
+
     public func createArticle(_ draft: ArticleDraft) async throws -> Article {
         throw DomainError.unsupportedOperation
     }
