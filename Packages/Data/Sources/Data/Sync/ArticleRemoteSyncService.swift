@@ -19,14 +19,58 @@ final class ArticleRemoteSyncService {
         self.deletionStore = deletionStore
     }
 
+    /// Uploads pending local creates/updates/deletes without pulling remote changes.
+    func pushLocalChanges() async throws {
+        try await pushPendingChanges()
+        try await pushLocalDeletions()
+    }
+
+    func pushLocalDeletions() async throws {
+        try await pushPendingDeletions()
+        try save()
+    }
+
+    /// Pushes a single article when saved locally. Returns the canonical id (mockapi may reassign on create).
+    @discardableResult
+    func pushArticle(id: String) async throws -> String {
+        let descriptor = FetchDescriptor<ArticleModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        guard let model = try modelContext.fetch(descriptor).first else {
+            return id
+        }
+        guard model.needsSyncPush, !model.isDemoSeed else {
+            return id
+        }
+
+        let oldID = model.id
+        let canonicalID: String
+        if model.isOnRemote {
+            let remote = try await api.update(RemoteArticlePayload(from: model))
+            ArticlePersistenceMapper.applyRemote(remote, to: model)
+            canonicalID = remote.id
+        } else {
+            let remote = try await api.create(RemoteArticlePayload(from: model))
+            if remote.id != oldID {
+                try applyCreatedRemote(remote, replacing: model)
+            } else {
+                ArticlePersistenceMapper.applyRemote(remote, to: model)
+            }
+            canonicalID = remote.id
+        }
+        try save()
+        return canonicalID
+    }
+
     func sync() async throws {
+        // Upload local pending changes before merging remote so pull cannot clear needsSyncPush first.
+        try await pushLocalChanges()
+
         let remoteArticles = try await api.fetchAll()
         let remoteByID = Dictionary(uniqueKeysWithValues: remoteArticles.map { ($0.id, $0) })
 
-        try await removeLocalArticlesDeletedRemotely(remoteByID: remoteByID)
+        try removeLocalArticlesDeletedRemotely(remoteByID: remoteByID)
         try mergeRemoteArticles(remoteByID: remoteByID)
-        try await pushPendingChanges()
-        try await pushPendingDeletions()
         try save()
     }
 
@@ -58,20 +102,10 @@ final class ArticleRemoteSyncService {
     }
 
     private func merge(remote: ArticleDTO, into local: ArticleModel) throws {
-        let remoteUpdatedAt = remote.resolvedUpdatedAt
+        guard !local.needsSyncPush else { return }
 
-        if local.needsSyncPush {
-            if remoteUpdatedAt > local.updatedAt {
-                ArticlePersistenceMapper.applyRemote(remote, to: local)
-            } else if remoteUpdatedAt == local.updatedAt {
-                ArticlePersistenceMapper.applyRemote(remote, to: local)
-            }
-            return
-        }
-
-        if remoteUpdatedAt >= local.updatedAt {
-            ArticlePersistenceMapper.applyRemote(remote, to: local)
-        }
+        // No pending local edits → remote is source of truth (mockapi may keep stale `updatedAt`).
+        ArticlePersistenceMapper.applyRemote(remote, to: local)
     }
 
     private func pushPendingChanges() async throws {
@@ -87,11 +121,29 @@ final class ArticleRemoteSyncService {
                 ArticlePersistenceMapper.applyRemote(remote, to: model)
             } else {
                 let remote = try await api.create(payload)
-                if remote.id != model.id {
-                    model.id = remote.id
-                }
-                ArticlePersistenceMapper.applyRemote(remote, to: model)
+                try applyCreatedRemote(remote, replacing: model)
             }
+        }
+    }
+
+    private func applyCreatedRemote(_ remote: ArticleDTO, replacing model: ArticleModel) throws {
+        let oldID = model.id
+        if remote.id != oldID {
+            try updateFavoriteArticleIDs(from: oldID, to: remote.id)
+            modelContext.delete(model)
+            modelContext.insert(ArticlePersistenceMapper.makeUserModel(from: remote))
+        } else {
+            ArticlePersistenceMapper.applyRemote(remote, to: model)
+        }
+    }
+
+    private func updateFavoriteArticleIDs(from oldID: String, to newID: String) throws {
+        let descriptor = FetchDescriptor<FavoriteArticleModel>(
+            predicate: #Predicate { $0.articleId == oldID }
+        )
+        let favorites = try modelContext.fetch(descriptor)
+        for favorite in favorites {
+            favorite.articleId = newID
         }
     }
 
