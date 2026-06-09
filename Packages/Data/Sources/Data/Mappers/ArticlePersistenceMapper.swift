@@ -19,6 +19,9 @@ enum ArticlePersistenceMapper {
         model.summary = draft.summary
         model.content = draft.content
         model.updatedAt = updatedAt
+        if !model.isDemoSeed {
+            model.needsSyncPush = true
+        }
     }
 
     static func applyRemote(_ dto: ArticleDTO, to model: ArticleModel) {

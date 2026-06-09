@@ -100,7 +100,8 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
         )
         modelContext.insert(model)
         try save()
-        return ArticlePersistenceMapper.toDomain(model)
+        let articleID = await pushArticleToRemoteIfEnabled(localID: model.id)
+        return try await fetchArticle(id: articleID)
     }
 
     public func updateArticle(id: String, draft: ArticleDraft) async throws -> Article {
@@ -116,7 +117,8 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
                 model.needsSyncPush = true
             }
             try save()
-            return ArticlePersistenceMapper.toDomain(model)
+            let articleID = await pushArticleToRemoteIfEnabled(localID: id)
+            return try await fetchArticle(id: articleID)
         } catch let error as DomainError {
             throw error
         } catch {
@@ -138,6 +140,7 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
             try deleteFavorites(for: id)
             modelContext.delete(model)
             try save()
+            await pushDeletionsToRemoteIfEnabled()
         } catch let error as DomainError {
             throw error
         } catch {
@@ -167,6 +170,20 @@ public final class SwiftDataArticleRepository: ArticleRepositoryProtocol {
         } catch {
             throw DomainError.persistenceFailed
         }
+    }
+
+    private func pushArticleToRemoteIfEnabled(localID: String) async -> String {
+        guard remoteSyncSettings.isEnabled, let syncService else { return localID }
+        do {
+            return try await syncService.pushArticle(id: localID)
+        } catch {
+            return localID
+        }
+    }
+
+    private func pushDeletionsToRemoteIfEnabled() async {
+        guard remoteSyncSettings.isEnabled, let syncService else { return }
+        try? await syncService.pushLocalDeletions()
     }
 
     private func map(_ error: NetworkError) -> DomainError {
