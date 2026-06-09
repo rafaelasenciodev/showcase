@@ -12,7 +12,8 @@ struct ArticleMapperTests {
             author: "Author",
             publishedAt: Date(timeIntervalSince1970: 0),
             summary: "Summary",
-            content: "Content"
+            content: "Content",
+            updatedAt: nil
         )
         let article = ArticleMapper.toDomain(dto)
         #expect(article.id == "test-id")

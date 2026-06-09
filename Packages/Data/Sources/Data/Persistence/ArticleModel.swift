@@ -9,7 +9,10 @@ public final class ArticleModel {
     public var publishedAt: Date
     public var summary: String
     public var content: String
+    public var updatedAt: Date
     public var isDemoSeed: Bool
+    public var isOnRemote: Bool
+    public var needsSyncPush: Bool
 
     public init(
         id: String,
@@ -18,7 +21,10 @@ public final class ArticleModel {
         publishedAt: Date,
         summary: String,
         content: String,
-        isDemoSeed: Bool = false
+        updatedAt: Date,
+        isDemoSeed: Bool = false,
+        isOnRemote: Bool = false,
+        needsSyncPush: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -26,6 +32,9 @@ public final class ArticleModel {
         self.publishedAt = publishedAt
         self.summary = summary
         self.content = content
+        self.updatedAt = updatedAt
         self.isDemoSeed = isDemoSeed
+        self.isOnRemote = isOnRemote
+        self.needsSyncPush = needsSyncPush
     }
 }

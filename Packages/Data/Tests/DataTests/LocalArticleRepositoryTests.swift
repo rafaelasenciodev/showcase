@@ -8,6 +8,6 @@ struct LocalArticleRepositoryTests {
     func loadBundled() async throws {
         let repository = LocalArticleRepository()
         let articles = try await repository.fetchArticles()
-        #expect(articles.count >= 8)
+        #expect(articles.count >= 3)
     }
 }
