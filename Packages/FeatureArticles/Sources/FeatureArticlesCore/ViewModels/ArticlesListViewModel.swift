@@ -12,6 +12,7 @@ public final class ArticlesListViewModel {
         didSet { applySearch() }
     }
     public private(set) var favoriteIDs: Set<String> = []
+    public private(set) var syncErrorMessage: String?
 
     private let fetchArticles: FetchArticlesUseCase
     private let searchArticles: SearchArticlesUseCase
@@ -47,18 +48,21 @@ public final class ArticlesListViewModel {
 
     public func refresh() async {
         networkMonitor.dismissBackOnlineBanner()
-        viewState = .loading
+        syncErrorMessage = nil
         do {
             allArticles = try await refreshArticles.execute()
             try await loadFavoriteIDs()
             applySearch()
             updateViewState()
         } catch {
-            if allArticles.isEmpty {
-                viewState = .error(errorMessage(for: error))
-            } else {
+            if let local = try? await fetchArticles.execute() {
+                allArticles = local
                 applySearch()
+                updateViewState()
+            } else if allArticles.isEmpty {
+                viewState = .error(errorMessage(for: error))
             }
+            syncErrorMessage = errorMessage(for: error)
         }
     }
 
