@@ -16,6 +16,22 @@ public final class URLSessionAPIClient: APIClientProtocol, @unchecked Sendable {
         _ endpoint: Endpoint,
         responseType: T.Type
     ) async throws -> T {
+        let data = try await perform(endpoint)
+        guard !data.isEmpty else {
+            throw NetworkError.decodingFailed
+        }
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw NetworkError.decodingFailed
+        }
+    }
+
+    public func request(_ endpoint: Endpoint) async throws {
+        _ = try await perform(endpoint)
+    }
+
+    private func perform(_ endpoint: Endpoint) async throws -> Data {
         let request = try buildRequest(for: endpoint)
         do {
             let (data, response) = try await session.data(for: request)
@@ -24,11 +40,7 @@ public final class URLSessionAPIClient: APIClientProtocol, @unchecked Sendable {
             }
             switch httpResponse.statusCode {
             case 200...299:
-                do {
-                    return try decoder.decode(T.self, from: data)
-                } catch {
-                    throw NetworkError.decodingFailed
-                }
+                return data
             case 404:
                 throw NetworkError.notFound
             default:
@@ -49,7 +61,13 @@ public final class URLSessionAPIClient: APIClientProtocol, @unchecked Sendable {
         guard var components = URLComponents(url: configuration.baseURL, resolvingAgainstBaseURL: true) else {
             throw NetworkError.invalidURL
         }
-        components.path = endpoint.path
+        let basePath = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let endpointPath = endpoint.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if basePath.isEmpty {
+            components.path = "/\(endpointPath)"
+        } else {
+            components.path = "/\(basePath)/\(endpointPath)"
+        }
         components.queryItems = endpoint.queryItems
         guard let url = components.url else {
             throw NetworkError.invalidURL
@@ -58,6 +76,7 @@ public final class URLSessionAPIClient: APIClientProtocol, @unchecked Sendable {
         request.httpMethod = endpoint.method.rawValue
         request.timeoutInterval = configuration.timeout
         endpoint.headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
+        request.httpBody = endpoint.body
         return request
     }
 }

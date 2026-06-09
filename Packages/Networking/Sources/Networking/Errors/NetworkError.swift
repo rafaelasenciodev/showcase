@@ -7,4 +7,5 @@ public enum NetworkError: Error, Equatable, Sendable {
     case notFound
     case serverError(Int)
     case decodingFailed
+    case encodingFailed
 }
